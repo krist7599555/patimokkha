@@ -1,0 +1,49 @@
+{
+  "name": "bhikkhupatimokkha",
+  "version": "0.0.1",
+  "type": "module",
+  "scripts": {
+    "dev": "vite dev",
+    "build": "vite build",
+    "preview": "vite preview",
+    "check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
+    "check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
+    "format": "prettier --write . && DEBUG=eslint:eslint eslint ./src --fix",
+    "lint": "prettier --check . && DEBUG=eslint:eslint eslint ./src"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.14.0",
+    "@fontsource/ibm-plex-sans-thai-looped": "^5.1.0",
+    "@fontsource/maitree": "^5.1.0",
+    "@fontsource/noto-serif-thai": "^5.1.0",
+    "@fontsource/thasadith": "^5.1.0",
+    "@sveltejs/adapter-auto": "^3.0.0",
+    "@sveltejs/adapter-static": "^3.0.6",
+    "@sveltejs/kit": "^2.0.0",
+    "@sveltejs/vite-plugin-svelte": "^4.0.0",
+    "@tailwindcss/aspect-ratio": "^0.4.2",
+    "@tailwindcss/container-queries": "^0.1.1",
+    "@tailwindcss/forms": "^0.5.9",
+    "@tailwindcss/typography": "^0.5.15",
+    "autoprefixer": "^10.4.20",
+    "eslint": "^9.14.0",
+    "eslint-config-prettier": "^9.1.0",
+    "eslint-plugin-justive-better-ts-belt": "^0.0.10",
+    "eslint-plugin-perfectionist": "^3.9.1",
+    "eslint-plugin-prettier": "^5.2.1",
+    "eslint-plugin-svelte": "^2.46.0",
+    "globals": "^15.11.0",
+    "prettier": "^3.3.2",
+    "prettier-plugin-svelte": "^3.2.6",
+    "prettier-plugin-tailwindcss": "^0.6.5",
+    "svelte": "^5.1.9",
+    "svelte-check": "^4.0.0",
+    "tailwindcss": "^3.4.9",
+    "typescript": "^5.0.0",
+    "typescript-eslint": "^8.12.2",
+    "vite": "^5.0.3"
+  },
+  "dependencies": {
+    "@mobily/ts-belt": "^3.13.1"
+  }
+}

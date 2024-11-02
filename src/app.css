@@ -1,0 +1,13 @@
+@import 'tailwindcss/base';
+@import 'tailwindcss/components';
+@import 'tailwindcss/utilities';
+@import '@fontsource/noto-serif-thai';
+
+body {
+  font-family: 'Noto Serif Thai';
+}
+
+/* @fontsource/thasadith
+@fontsource/ibm-plex-sans-thai-looped
+@fontsource/maitree
+@fontsource/noto-serif-thai */
