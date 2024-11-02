@@ -10,7 +10,7 @@
     "check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
     "format": "prettier --write . && DEBUG=eslint:eslint eslint ./src --fix",
     "lint": "prettier --check . && DEBUG=eslint:eslint eslint ./src",
-    "deploy": "vite build && NODE_DEBUG=gh-pages gh-pages -d build -t true"
+    "deploy": "vite build && NODE_DEBUG=gh-pages gh-pages --dist ./build --no-history"
   },
   "devDependencies": {
     "@eslint/js": "^9.14.0",
