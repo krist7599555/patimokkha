@@ -1,0 +1,86 @@
+import * as ExcelJS from 'exceljs';
+import * as Bun from 'bun'
+
+xlsx := Bun.file('./src/ggsheet/patim.xlsx')
+xlsxOutputJson := Bun.file('./src/ggsheet/patim.json')
+workbook := new ExcelJS.Workbook()
+await workbook.xlsx.load(await xlsx.arrayBuffer())
+worksheet := workbook.worksheets.at(0)!; // Assuming you want the first sheet
+
+
+type FormattedCell =
+  | { type: 'p', text: string }
+  | { type: 'i', number: number }
+  | { type: 'b', text: string }
+  | { type: 'u', value: any }
+
+isTextCell := (cell: FormattedCell): cell is Extract<FormattedCell, { text: string }> => switch (cell)
+  { text }
+    true
+  else
+    false
+
+formatFlatString := &: string
+  |> .trim()
+  |> .split('\n\n')
+  |> .filter Boolean
+  |> .map (i) => { type: 'p', text: i }
+  |> as FormattedCell[]
+
+formatCellValue := (cell: ExcelJS.CellValue): FormattedCell[] =>
+  switch cell
+    <? "string"
+      formatFlatString(cell)
+    <? "number"
+      [{ type: "i", number: cell }]
+    { richText }
+      richText.flatMap (t) => switch t.font ?? {}
+        { bold: true }
+          [{ type: 'b', text: t.text.trim() }]
+        else
+          formatFlatString(t.text)
+    else
+      [{ type: 'u', value: cell }]
+
+headers := worksheet
+  |> .getRow(1)
+  |> .values
+  |> as ExcelJS.CellValue[]
+  |> .slice(1) // Assuming headers are in the first row, starting from the second column
+  |> .filter & <? "string"
+  |> .map &.toString()
+
+isAllSame := (arr: string[]) => [...new Set(arr)].length == 1
+
+function formatColumns(columns: ExcelJS.CellValue[])
+  [, sectionId, order, sectionLabel, ...rest] := columns
+  [pali, thai, roman, tran] := rest.map formatCellValue
+  
+  o := [pali, thai, roman, tran].map .map(.type).join('')
+  if isAllSame(o) and pali.every(isTextCell) && thai.every(isTextCell) && roman.every(isTextCell) && tran.every(isTextCell)
+    chants := [0...pali.length].map (idx) =>
+      type: pali[idx].type
+      pali: pali[idx].text
+      thai: thai[idx].text
+      roman: roman[idx].text
+      tran: tran[idx].text
+    return
+      type: "page"
+      sectionId: sectionId
+      sectionLabel: sectionLabel
+      bulletOrder: order if order <? "number" && 1 <= order < 100
+      chants: chants
+  else
+    throw "structure not match " + JSON.stringify(o) + JSON.stringify({pali, thai, roman, tran}, null, 2)
+  // return {sectionId, order, sectionLabel, pali, thai, roman, tran}
+
+output := worksheet
+  |> .getRows(2, 1000)!
+  |> .map .values as ExcelJS.CellValue[]
+  |> .filter .length > 0
+  |> .map formatColumns
+ 
+
+
+outputStr := JSON.stringify(output, null, 2)
+await Bun.write(xlsxOutputJson, outputStr);

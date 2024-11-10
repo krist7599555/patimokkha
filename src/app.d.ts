@@ -10,4 +10,13 @@ declare global {
   }
 }
 
+declare global {
+  namespace Belt {
+    type UseMutableArrays = 1;
+  }
+}
+declare module '*.csv' {
+  export default Array<{ [key: string]: string }>;
+}
+
 export {};
