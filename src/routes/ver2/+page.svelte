@@ -1,11 +1,8 @@
 <script lang="ts">
   import type { KeyboardEventHandler } from 'svelte/elements';
 
-  import type { PageData } from '../ptm/$types';
-
   import { default as ptm_ } from './patim.json';
 
-  // let { data }: PageData = $props();
   type Patim = (typeof ptm_)[number];
   const patims = ptm_ as Patim[];
 
