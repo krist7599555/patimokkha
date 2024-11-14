@@ -1,0 +1,36 @@
+import { test, expect } from 'bun:test';
+import { paliToThai, removeSymbol } from './pali-convert2.civet';
+
+test('basic', () => {
+  expect(paliToThai('')).toBeString();
+  expect(paliToThai('.')).toBeString();
+  return expect(paliToThai('ภควโต;')).toBeString();
+});
+test('edge', () => {
+  expect(paliToThai('ทฺวา')).toBe('ท๎วา');
+  expect(paliToThai('ทฺวาทส')).toBe('ท๎วาทะสะ');
+  expect(paliToThai('ตตฺริทํ')).toBe('ตัต๎ริทัง');
+  expect(paliToThai('กลฺยาณธมฺมํ')).toBe('กัล๎ยาณะธัมมัง');
+  expect(paliToThai('วตฺถุสฺมิํ')).toBe('วัตถุส๎มิง');
+  expect(paliToThai('มหลฺลกมฺปน')).toBe('มะหัลละกัมปะนะ');
+  expect(paliToThai('ยาวตติยญฺเจ')).toBe('ยาวะตะติยัญเจ');
+});
+test('invalid args', () => {
+  data := import "../ggsheet/patim.json"
+    |> await
+    |> .default
+  
+  for { chants } of data[15..]
+    for chant of chants
+      continue if chant.type === 'b'
+      console.log '#---'
+      console.log chant
+      console.log '---'
+      console.log 'original:', removeSymbol(chant.pali)
+      console.log '---'
+      console.log 'output:', removeSymbol(paliToThai(chant.pali))
+      console.log '---'
+      console.log 'expect:', removeSymbol(chant.thai)
+      console.log '---'
+      expect(removeSymbol(paliToThai(chant.pali))).toBe(removeSymbol(chant.thai))
+});

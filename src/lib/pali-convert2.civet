@@ -1,0 +1,56 @@
+export paliToThai := (pali: string) =>
+  throw new Error "expect string, got" + pali if pali !<? "string"
+  prevscon .= ''
+  pali
+    |> .replace /ึ/g, 'ิํ'
+    |> .replace /ํ/g, 'งฺ'
+    // |> .replace(/([เโ])?([ก-ฮ]ฺ)?([ก-ฮ])([าิีุู])?([ก-ฮ]ฺ|ํ)?/g, (m, args) =>
+    |> .replace /([เโ])?([ก-ฮ]ฺ)?([ก-ฮ])([าิีุู])?([ก-ฮ]ฺ|ํ)?/g, (m, ...args) =>
+      [lvow = '', lcon = '', con = '', vow = '', scon = '', idx, str] .= args
+      scon = scon.replace('ฺ', '')
+      if !/[ก-ฮ]ฺ/.test(str.slice(idx - 2, idx))
+        prevscon = ''
+      // console.log 'prevscon + con', prevscon + con
+      return [
+        switch prevscon + con
+          /^[ง][ก-ฮ]$/
+            ''
+          /^(ยย|ลล)$/
+            ''
+          /^[ก-ฮ][ยรลว]$/
+           '\u0E4E' 
+          /^[ฬม]ห$/
+           '\u0E4E' 
+          else
+            ''
+        lvow,
+        lcon.replace('ฺ', '\u0E4E') if lcon <? "string", // ยามักการ
+        con,
+        lvow ? '' : vow ? vow : (if scon then 'ั' else 'ะ'),
+        scon ? scon : ''
+      ]
+        |> .filter Boolean
+        |> .join ''
+        // ||> console.log ., [prevscon, idx, str.slice(idx - 1, idx)], args[...5]
+        ||> (x) => 
+          prevscon = scon
+    // |> .replace /ั([ก-ฮ])(?=[ยรลว])/g, "ั$1\u0E4E"
+    |> .replace /พ๎รัหม/g, "พ๎รัห๎ม"
+    |> .replace /พ๎ราหมะ/g, "พ๎ราห๎มะ"
+    |> .replace /คารัยห/g, "คารัย๎ห"
+    |> .replace /ตุณหี/g, "ตุณ๎หี"
+    // ๎
+    // ม๎
+    // ทัฬ๎หะเมนัง
+    // |> .replace /ล๎ลา/g, "ลลา"
+    |> .replace /เ([ก-ฮ])ย\u0E4Eย(?=[ะา])/g, "เ$1ยย"
+    // ||> console.log
+    |> .replace /([ัุูิี])สม([ะัาิีุู])/g, "$1ส\u0E4Eม$2"
+    |> .replace /([ั])([ะัาิีุู])/g, "$1ส\u0E4Eม$2"
+    |> (x) => x
+    
+export removeSymbol := (&: string)
+    |> .replace(/[;,\.:ฯ]/g, '')
+    |> .replace(/\s+/g, ' ')
+    |> .replace(/[“‘'"]/g, '')
+    |> .trim()

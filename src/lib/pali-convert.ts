@@ -90,7 +90,7 @@ function romanToPoli(roman: string): string {
     .replace(/(iṃ|uṃ|ṃ|[aāiīuūeo])/g, '<$1>')
     .replace(/(|[kgncjṭḍtdpb]h?|[ñṇmyrlvshḷ])<(iṃ|uṃ|ṃ|[aāiīuūeo])>/g, (m, cons, vow) => {
       if (!ro2th(cons)) {
-        console.log('NOT FONUND ro2th', cons, m);
+        throw new Error('NOT FONUND ro2th; ' + cons + '; ' + m);
       }
       return `+${ro2th(vow)}${ro2th(cons)}`;
     })

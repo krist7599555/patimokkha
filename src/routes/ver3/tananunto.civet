@@ -1,0 +1,65 @@
+import * as Bun from 'bun';
+import * as Cheerio from 'cheerio'
+
+tananuntoUrl := (word: string) => 
+  new URL('https://www.tananunto.com/pali/getdatatoquery.php')
+    ||> .searchParams.set('data', word)
+
+tananuntoQueryOnce := (word: string) =>
+  tananuntoUrl(word).href
+    |> await fetch(., redirect: "manual")
+    |> (dic) => switch dic
+      { status: 200 }
+        await dic.text()
+          |> Cheerio.load(.)
+          |> ($) => $('p#rcorners2').first().text()
+          |> (it) =>
+            if [, word, desc] := /^ศัพท์บาลี --->>(.+)-->> คำแปล --->>(.+)/.exec it
+              return {  word, desc }
+      else
+        undefined
+
+tananuntoQuery := (word: string) =>
+  for len of [word.#..1]
+    if out := await tananuntoQueryOnce(word[...len])
+      return { word_query: word, word_result: out.word, desciption: out.desc, exact: word === out.word  }
+  undefined
+
+words := Bun.file('src/routes/ver3/allpaliword.txt')
+  |> .text()
+  |> await
+  |> .split('\n')
+  |> .map(.trim())
+  |> .filter(Boolean)
+arr .= []
+
+
+
+// for word of ['อิงฺฆํ']
+for word of words.slice(0, 10)
+  console.log await tananuntoQuery(word)
+
+  // console.log word, 'running'
+  // dic .= await fetch(tananuntoUrl(word).href, { redirect: 'follow', follow: 20, verbose: true, headers: {
+  //  'content-type': 'text/html; charset=UTF-8'
+  // } })
+  // out := [word, await dic.text()]
+  // // out := switch dic
+  // //   { status: 200 }
+  // //     [word, await dic.text()]
+  // //   { status: 302 }
+  // //     href := dic.headers.get('location')!
+  // //     console.log new URL(href).searchParams.get('data')
+  // //     dic = await fetch(dic.headers.get('location')!, { redirect: 'manual' })
+  // //     [word, await dic.text()]
+  // //   else
+  // //     [word, 'NOT MATCH']
+  // console.log out
+  // $ := Cheerio.load(out[1])
+  // console.log ({
+  //   word,
+  //   status: dic.statusText,
+  //   meaning: $('p#rcorners2').first().text()
+  // })
+
+// console.log(JSON.stringify(arr, null, 2))

@@ -30,6 +30,7 @@
     "@tailwindcss/typography": "^0.5.15",
     "@types/bun": "^1.1.13",
     "autoprefixer": "^10.4.20",
+    "cheerio": "^1.0.0",
     "eslint": "^9.14.0",
     "eslint-config-prettier": "^9.1.0",
     "eslint-plugin-civet": "^0.0.5",
@@ -53,6 +54,7 @@
   "dependencies": {
     "@mobily/ts-belt": "^3.13.1",
     "magic-regexp": "^0.8.0",
+    "sugar": "^2.0.6",
     "ts-pattern": "^5.5.0"
   }
 }
