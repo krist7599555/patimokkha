@@ -1,0 +1,23 @@
+
+import * as Bun from 'bun';
+
+words := Bun.file('src/routes/ver3/allpaliword.txt')
+  |> .text()
+  |> await
+  |> .split('\n')
+  |> .map(.trim())
+  |> .filter(Boolean)
+
+function analyzePali(word: string)
+  return .= [] as string[]
+  word = word.replace(/([เโ])([ก-๛])/g, '$2$1')
+  console.log 'ana', word
+  while [, prefix, end] := /^([ก-๛]+)(าย|เว|ตฺวา|เยฺย|สฺมึ|สฺมา|านิ|เน|เว|ํ|า|หิ|ภิ|เ|โ|ต|ตพฺพ|นีย|ตาวี|ตวนฺตุ|นฺต)$/.exec word
+    word = prefix
+    return.value.push(end)
+  
+  return.value.push(word)
+      
+for let i = 0; i < words.#; i += 30
+  w := words[i]
+  console.log w, analyzePali(w)

@@ -13,13 +13,9 @@ export paliToThai := (pali: string) =>
       // console.log 'prevscon + con', prevscon + con
       return [
         switch prevscon + con
-          /^[ง][ก-ฮ]$/
+          /^[ง][ก-ฮ]$/, /^(ยย|ลล)$/
             ''
-          /^(ยย|ลล)$/
-            ''
-          /^[ก-ฮ][ยรลว]$/
-           '\u0E4E' 
-          /^[ฬม]ห$/
+          /^[ก-ฮ][ยรลว]$/, /^(สม|หม|ฬห|มห)$/
            '\u0E4E' 
           else
             ''
@@ -31,22 +27,13 @@ export paliToThai := (pali: string) =>
       ]
         |> .filter Boolean
         |> .join ''
-        // ||> console.log ., [prevscon, idx, str.slice(idx - 1, idx)], args[...5]
         ||> (x) => 
           prevscon = scon
-    // |> .replace /ั([ก-ฮ])(?=[ยรลว])/g, "ั$1\u0E4E"
-    |> .replace /พ๎รัหม/g, "พ๎รัห๎ม"
-    |> .replace /พ๎ราหมะ/g, "พ๎ราห๎มะ"
     |> .replace /คารัยห/g, "คารัย๎ห"
     |> .replace /ตุณหี/g, "ตุณ๎หี"
     // ๎
     // ม๎
     // ทัฬ๎หะเมนัง
-    // |> .replace /ล๎ลา/g, "ลลา"
-    |> .replace /เ([ก-ฮ])ย\u0E4Eย(?=[ะา])/g, "เ$1ยย"
-    // ||> console.log
-    |> .replace /([ัุูิี])สม([ะัาิีุู])/g, "$1ส\u0E4Eม$2"
-    |> .replace /([ั])([ะัาิีุู])/g, "$1ส\u0E4Eม$2"
     |> (x) => x
     
 export removeSymbol := (&: string)
